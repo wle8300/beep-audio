@@ -2,7 +2,7 @@
   "name": "beep-audio",
   "author": "William Le <email@wle8300.com>",
   "version": "0.2.0",
-  "description": "A Boilerplate for creating NPM packages using Babel, ESLint, Mocha and Chai",
+  "description": "A lightweight sound library designed for UI sound effects (sfx)",
   "main": "build/index.js",
   "keywords": [
     "es6",

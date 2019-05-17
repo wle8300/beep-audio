@@ -1,33 +1,41 @@
-# babel-npm-boilerplate [![Build Status](https://travis-ci.org/camsong/babel-npm-boilerplate.svg)](https://travis-ci.org/camsong/babel-npm-boilerplate) [![npm version](https://badge.fury.io/js/babel-npm-boilerplate.svg)](http://badge.fury.io/js/babel-npm-boilerplate)
 
-A Boilerplate for creating NPM packages using Babel, ESLint, Mocha and Chai
+## Lightweight audio library designed for UI sound effects (sfx)
 
+I needed a library to play short audio clips to use for my JavaScript frontend apps. This library will preload your audio files, and only provides two methods:
 
-## What's inside
+- `play()`
+- `adjustVolume(`0.0 ~ 1.0`)`
 
-Minimal structure for a npm package source.
+The volume default is (`1.0`) which is the loudest possible for the device's speakers.
 
-* Babel 6
-* Mocha
-* ESLint
-* Isparta
-
-## Installation
-
-Clone this repo or download using `npm`
+## Install
 
 ```
-npm install babel-npm-boilerplate --save
+npm install --save beep-audio
 ```
 
 ## Usage
 
-* `npm run test` to run tests
-* `npm run test-cov` to generate test coverage
-* `npm run build` to transform es6/es7 to es5 by Babel
-* `npm run clean` to clean `build/` directory
-* `npm run lint` to lint js using ESLint in Airbnb's Javascript style
+```
+import Beep from 'beep-audio'
+import PromptSuccess from './audio-files/success.mp3'
 
-## Liscense
+const noise = new Beep({
+  url: PromptSuccess,
+  volume: 0.4
+})
 
-MIT
+noise.adjustVolume(0.5).play()
+//or
+noise.adjustVolume(0.5)
+noise.play()
+```
+
+## Technical
+
+It uses the `Audio` ([mdn](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement)) API under-the-hood, and preloads audio files so it'll be immediately ready for playback without lag. Ideally your sfx should be locally packaged with your app. That's the fastest.
+
+Also, this differs from other audio libraries because it spawns a new player everytime you call the `beep.play()` method. This means you don't have to wait for the sfx to finish before playing it again. You can do a thousand of plays within 1sec if you wanted!
+
+The library doesn't have any dependencies.
+
