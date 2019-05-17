@@ -1,7 +1,20 @@
+const throttle = (fn, delay) => {
+  let lastCall = 0;
+  return function(...args) {
+    const now = new Date().getTime();
+    if (now - lastCall < delay) {
+      return;
+    }
+    lastCall = now;
+    return fn(...args);
+  };
+};
+
 export default class Beep {
   constructor(props) {
     const url = props.url;
     const volume = props.volume || 1.0;
+    const throttleMs = props.throttleMs || 0;
 
     // this is a hack
     // to force browser to
@@ -44,16 +57,19 @@ export default class Beep {
 
     this.url = url;
     this.volume = volume;
+    this.throttleMs = throttleMs;
   }
 
-  play = () => {
+  play = throttle(() => {
     const audioElement = new Audio(this.url);
 
     audioElement.addEventListener("loadeddata", () => {
       audioElement.volume = this.volume;
       audioElement.play();
     });
-  };
+
+    return this;
+  }, this.throttleMs);
 
   adjustVolume = volume => {
     this.volume = volume;
