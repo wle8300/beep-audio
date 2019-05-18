@@ -16,9 +16,8 @@ export default class Beep {
     const volume = props.volume || 1.0;
     const throttleMs = props.throttleMs || 0;
 
-    // this is a hack
-    // to force browser to
-    // preload audio file
+    // hack to force browser
+    // to preload audio file
     const appendAudioElement = url => {
       // hash function
       // credit: https://stackoverflow.com/a/8831937/11330825
@@ -35,8 +34,8 @@ export default class Beep {
         return Math.abs(hash);
       };
       const id = `boink-${hash(url)}`;
-
       let audioElement = document.createElement("audio");
+
       audioElement.id = id;
       audioElement.src = url;
       audioElement.preload = "auto";
@@ -58,9 +57,11 @@ export default class Beep {
     this.url = url;
     this.volume = volume;
     this.throttleMs = throttleMs;
+    this.play = throttle(this.play, throttleMs);
+    this.adjustVolume = this.adjustVolume;
   }
 
-  play = throttle(() => {
+  play = () => {
     const audioElement = new Audio(this.url);
 
     audioElement.addEventListener("loadeddata", () => {
@@ -69,7 +70,7 @@ export default class Beep {
     });
 
     return this;
-  }, this.throttleMs);
+  };
 
   adjustVolume = volume => {
     this.volume = volume;

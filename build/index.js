@@ -6,6 +6,18 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var throttle = function throttle(fn, delay) {
+  var lastCall = 0;
+  return function () {
+    var now = new Date().getTime();
+    if (now - lastCall < delay) {
+      return;
+    }
+    lastCall = now;
+    return fn.apply(undefined, arguments);
+  };
+};
+
 var Beep = function Beep(props) {
   _classCallCheck(this, Beep);
 
@@ -13,10 +25,10 @@ var Beep = function Beep(props) {
 
   var url = props.url;
   var volume = props.volume || 1.0;
+  var throttleMs = props.throttleMs || 0;
 
-  // this is a hack
-  // to force browser to
-  // preload audio file
+  // hack to force browser
+  // to preload audio file
   var appendAudioElement = function appendAudioElement(url) {
     // hash function
     // credit: https://stackoverflow.com/a/8831937/11330825
@@ -33,8 +45,8 @@ var Beep = function Beep(props) {
       return Math.abs(hash);
     };
     var id = "boink-" + hash(url);
-
     var audioElement = document.createElement("audio");
+
     audioElement.id = id;
     audioElement.src = url;
     audioElement.preload = "auto";
@@ -55,6 +67,9 @@ var Beep = function Beep(props) {
 
   this.url = url;
   this.volume = volume;
+  this.throttleMs = throttleMs;
+  this.play = throttle(this.play, throttleMs);
+  this.adjustVolume = this.adjustVolume;
 };
 
 var _initialiseProps = function _initialiseProps() {
@@ -67,6 +82,8 @@ var _initialiseProps = function _initialiseProps() {
       audioElement.volume = _this.volume;
       audioElement.play();
     });
+
+    return _this;
   };
 
   this.adjustVolume = function (volume) {
